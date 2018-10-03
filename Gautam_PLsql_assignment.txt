@@ -1,0 +1,241 @@
+1.1
+
+DECLARE
+V_Sample1 NUMBER(2);
+V_Sample2 CONSTANT NUMBER(2):=1 ;
+V_Sample3 NUMBER(2) NOT NULL:=10 ;
+V_Sample4 NUMBER(2) := 50;
+V_Sample5 NUMBER(2) DEFAULT 25;
+
+BEGIN
+	dbms_output.put_line(' ');
+END;
+/
+
+1.2
+
+DECLARE 
+var_num1 NUMBER := 5;
+BEGIN
+DECLARE 
+var_num1 NUMBER := 10;
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Value for var_num1:' ||var_num1);
+END;
+DBMS_OUTPUT.PUT_LINE('Value for var_num1:' ||var_num1);
+END;
+
+1.3
+
+DECLARE 
+	V_Empno emp.empno%TYPE;
+	nRecord emp%rowtype;
+
+BEGIN
+	select * into nRecord from emp where empno = 7369;
+	dbms_output.put_line('Emp ID: ' || nRecord.empno);
+	dbms_output.put_line('Name: ' || nRecord.ename);
+	dbms_output.put_line('Job: ' || nRecord.job);
+	dbms_output.put_line('Manager: ' || nRecord.mgr);
+	dbms_output.put_line('Hire Date: ' || nRecord.hiredate);
+	dbms_output.put_line('Salary: ' || nRecord.sal);
+	dbms_output.put_line('Commision: ' || nRecord.comm);
+	dbms_output.put_line('Department Number: ' || nRecord.deptno);	
+END;
+/
+
+1.4
+
+DECLARE 
+	ename emp.ename%TYPE;
+	empno emp.empno%TYPE;
+        Job emp.job%TYPE;
+    
+BEGIN
+	dbms_output.put_line('Enter employee name: ');
+	ename := &ename ;
+	getDetails(ename, empno,job);
+	dbms_output.put_line('Emp ID: ' || empno);
+	dbms_output.put_line('Name: ' || ename);
+	dbms_output.put_line('Job: ' || job);
+END;
+/
+
+
+1.5
+DECLARE
+v_sal staff_master.staff_sal%type;
+thirty staff_master.staff_sal%type;
+BEGIN
+	select staff_sal into v_sal from staff_master where staff_code=100001;
+	thirty :=0.3*v_sal;
+	IF thirty > 5000 THEN
+		UPDATE STAFF_MASTER
+		SET STAFF_SAL = v_sal + 5000
+		where staff_code=100005;
+	ELSE 
+	UPDATE STAFF_MASTER
+	SET STAFF_SAL = v_sal + thirty
+	where staff_code=100001;
+	END IF;
+END;
+/
+
+
+2.1
+
+DECLARE
+V_BONUS V_SAL%TYPE;
+V_SAL STAFF_MASTER.STAFF_SAL%TYPE;
+CURSOR s_salaries is 
+      SELECT staff_sal from staff_master where mgr_code=100006; 
+BEGIN
+open s_salaries;
+loop
+	fetch s_salaries into v_sal;
+
+V_BONUS:=2*V_SAL;
+DBMS_OUTPUT.PUT_LINE('STAFF SALARY IS ' || V_SAL);
+DBMS_OUTPUT.PUT_LINE('STAFF BONUS IS ' || V_BONUS);
+
+END LOOP;
+CLOSE s_salaries;
+END;
+/
+
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('GIVEN CODE IS NOT VALID. ENTER VALID CODE');
+
+2.2
+
+DECLARE
+V_BONUS V_SAL%TYPE;
+V_SAL STAFF_MASTER.STAFF_SAL%TYPE;
+CURSOR s_salaries is 
+      SELECT staff_sal from staff_master where mgr_code=100006; 
+BEGIN
+open s_salaries;
+loop
+	fetch s_salaries into v_sal;
+
+V_BONUS:=2*V_SAL;
+DBMS_OUTPUT.PUT_LINE('STAFF SALARY IS ' || V_SAL);
+DBMS_OUTPUT.PUT_LINE('STAFF BONUS IS ' || V_BONUS);
+
+END LOOP;
+CLOSE s_salaries;
+
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('GIVEN CODE IS NOT VALID. ENTER VALID CODE');
+
+END;
+/
+
+
+
+2.3
+
+DECLARE
+V_comm emp.comm%TYPE;
+v_empno NUMBER(5):=7369;
+
+BEGIN
+SELECT comm into v_comm from emp where EMPNO = v_empno; 
+DBMS_OUTPUT.PUT_LINE('Employees commission IS ' || v_comm);
+
+EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+		dbms_output.put_line('Exception Message: Sorry No commission for employee with id ' || v_empno);
+END;
+/
+
+3.1
+DECLARE 
+PERSON_AGE NUMBER(3);
+PERSON_DOB DATE; 
+
+BEGIN
+DBMS_OUTPUT.PUT_LINE('ENTER YOUR DATE OF BIRTH');
+PERSON_DOB :=&DOB;
+PERSON_AGE = SYSDATE-PERSON_DOB;
+DBMS_OUTPUT.PUT_LINE('YOU ARE '||PERSON_AGE||' YEARS OLD');
+
+END;
+/
+
+
+3.2
+
+CREATE OR REPLACE PROCEDURE findmanager
+AS 
+DECLARE 
+v_staffcode staff_master.staff_code%type;
+v_staffname staff_master.staff_name%type;
+v_deptcode staff_master.dept_code%type;
+v_managercode staff_master.mgr_code%type;
+cursor staff_details is
+	SELECT staff_code,staff_name,dept_code,mgr_code into v_staffcode, v_staffname, 
+v_deptcode, v_managercode FROM staff_master t1, 
+staff_master t2 where t1.staff_code = t2.mgr_code;
+
+BEGIN 
+open staff_details;
+loop
+	fetch s_salaries into v_sal;
+ 
+END; 
+/
+
+
+3.3
+
+DECLARE
+v_comm emp.comm%TYPE;
+v_empno NUMBER(5):=7369;
+BEGIN
+
+SELECT comm into v_comm from emp where EMPNO = v_empno; 
+DBMS_OUTPUT.PUT_LINE('Employees commission IS ' || v_comm);
+
+EXCEPTION
+	WHEN NO_DATA_FOUND THEN
+		dbms_output.put_line('Exception Message: Sorry No commission for employee with id ' || v_empno);
+END;
+/
+
+3.4
+DECLARE 
+PERSON_AGE NUMBER(3);
+PERSON_DOB DATE; 
+BEGIN
+DBMS_OUTPUT.PUT_LINE('ENTER YOUR DATE OF BIRTH');
+PERSON_DOB :=&DOB;
+PERSON AGE= SYSDATE-PERSON_DOB;
+DBMS_OUTPUT.PUT_LINE('YOU ARE '||PERSON_AGE|| ' YEARS OLD');
+END
+/
+
+3.5
+
+CREATE OR REPLACE PROCEDURE findmanager
+AS 
+DECLARE 
+v_staffcode staff_master.staff_code%type;
+v_staffname staff_master.staff_name%type;
+v_deptcode staff_master.dept_code%type;
+v_managercode staff_master.mgr_code%type;
+cursor staff_details is
+	SELECT staff_code,staff_name,dept_code,mgr_code into v_staffcode, v_staffname, 
+v_deptcode, v_managercode FROM staff_master t1, 
+staff_master t2 where t1.staff_code = t2.mgr_code;
+
+BEGIN 
+open staff_details;
+loop
+	fetch s_salaries into v_sal;
+
+  
+END; 
+/
